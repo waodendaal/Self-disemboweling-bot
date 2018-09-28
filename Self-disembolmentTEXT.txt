@@ -1,0 +1,49 @@
+# "As the digital increasingly structures the contemporary world, curiously, it also withdraws; it becomes harder and harder for us to focus upon, as it becomes embedded, hidden, off-shored, or merely forgotten about" - David M. Berry, et al.
+import tweepy
+#Copyright 2018 Adriaan Odendaal
+#Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+#The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+def main():
+  consumerKey,consumerSecret,accessToken,accessTokenSecret = passwordReader()
+  print 'Consumerkey:',consumerKey,'x','\n','ConsumerSecret:',consumerSecret,'\n','accessToken:',accessToken,'\n','accessTokenSecret:',accessTokenSecret
+  lineToTweet = readSelf()
+  tweet(consumerKey, consumerSecret,accessToken, accessTokenSecret,lineToTweet)
+def passwordReader():
+  input_file = open('passwords.txt','r') # No peaking! 
+  passwords=input_file.read().splitlines()
+  consumerKey = passwords[0]
+  consumerSecret = passwords[1]
+  accessToken= passwords[2]
+  accessTokenSecret= passwords[3]
+  return consumerKey,consumerSecret,accessToken,accessTokenSecret
+def readSelf():
+  # https://vimeo.com/8537769
+  input_file = open('Self-disembolmentTEXT.txt', 'r')
+  lines =input_file.readlines()
+  print 'Line Numbers: ', len(lines)
+  counter= counterRead()
+  if counter==len(lines):
+    counter=0
+  print 'Line number (counter):',counter 
+  counterWrite(counter)
+  lineToTweet=lines[counter]
+  print 'Line to Tweet: ',lineToTweet, '\n'
+  return lineToTweet
+def counterRead():  # Counts the number the line is on
+  c_reader = open('counter.txt', 'r')
+  counter=int(c_reader.read())
+  c_reader.close()
+  return counter
+def counterWrite(counter): # Adds 1 to counter and saves
+  c_writer = open('counter.txt', 'w') 
+  c_writer.write(str(counter+1))
+  c_writer.close()
+def tweet(consumerKey, consumerSecret,accessToken, accessTokenSecret,lineToTweet):
+  auth = tweepy.OAuthHandler(consumerKey, consumerSecret)
+  auth.set_access_token(accessToken, accessTokenSecret)
+  api = tweepy.API(auth)
+  api.update_status(status=lineToTweet)
+if __name__ == "__main__":
+  main()
+# "The challenge is to bring software back into visibility so that we can pay attention to both what it is (ontology), where it has come from (through media archeology and genealogy) but also what it is doing" - David M. Berry
